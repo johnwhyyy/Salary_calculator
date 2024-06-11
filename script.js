@@ -9,7 +9,7 @@ function calculateAndPlotSalary() {
 
     const effortLevels = [10, 25, 50, 60, 75, 80, 100];
     const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
-
+    
     const currentSalary = calculateSalary(annualSalary, effortCoverage);
 
     console.log('Annual Salary:', annualSalary);
@@ -19,6 +19,11 @@ function calculateAndPlotSalary() {
     console.log('Current Salary:', currentSalary);
 
     const ctx = document.getElementById('salaryChart').getContext('2d');
+
+    // Check if chart instance exists and destroy it
+    if (window.salaryChart instanceof Chart) {
+        window.salaryChart.destroy();
+    }
 
     window.salaryChart = new Chart(ctx, {
         type: 'line',
