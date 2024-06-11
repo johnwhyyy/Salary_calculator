@@ -2,6 +2,11 @@ function calculateAndPlotSalary() {
     const annualSalary = parseFloat(document.getElementById('annualSalary').value);
     const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
 
+    if (isNaN(annualSalary) || isNaN(effortCoverage)) {
+        alert("Please enter valid numbers for salary and effort coverage.");
+        return;
+    }
+
     const effortLevels = [10, 25, 50, 60, 75, 80, 100];
     const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
     
