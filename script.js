@@ -9,8 +9,14 @@ function calculateAndPlotSalary() {
 
     const effortLevels = [10, 25, 50, 60, 75, 80, 100];
     const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
-    
+
     const currentSalary = calculateSalary(annualSalary, effortCoverage);
+
+    console.log('Annual Salary:', annualSalary);
+    console.log('Effort Coverage:', effortCoverage);
+    console.log('Effort Levels:', effortLevels);
+    console.log('Salaries:', salaries);
+    console.log('Current Salary:', currentSalary);
 
     const ctx = document.getElementById('salaryChart').getContext('2d');
 
@@ -34,7 +40,7 @@ function calculateAndPlotSalary() {
             },
             {
                 label: 'Current Effort Level',
-                data: effortLevels.map(effort => effort === effortCoverage ? currentSalary : null),
+                data: effortLevels.map(effort => (effort === effortCoverage ? currentSalary : null)),
                 pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
                 pointBorderColor: 'rgba(255, 99, 132, 1)',
                 pointBorderWidth: 2,
