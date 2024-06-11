@@ -15,10 +15,11 @@ function calculateAndPlotSalary() {
     const ctx = document.getElementById('salaryChart').getContext('2d');
 
     // Destroy any existing chart to avoid overlap
+    /*
     if (window.salaryChart) {
         window.salaryChart.destroy();
     }
-
+    */
     window.salaryChart = new Chart(ctx, {
         type: 'line',
         data: {
