@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salary Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -16,12 +17,12 @@
             <label for="effortCoverage">Effort Coverage (%):</label>
             <input type="number" id="effortCoverage" name="effortCoverage" required>
 
-            <button type="button" onclick="calculateSalary()">Calculate</button>
+            <button type="button" onclick="calculateAndPlotSalary()">Calculate</button>
         </form>
 
         <div id="results">
             <h2>Results</h2>
-            <p>Calculated Salary: <span id="calculatedSalary">$0.00</span></p>
+            <canvas id="salaryChart"></canvas>
         </div>
     </div>
 
