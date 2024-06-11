@@ -12,59 +12,32 @@ function calculateAndPlotSalary() {
     
     const currentSalary = calculateSalary(annualSalary, effortCoverage);
 
-    const ctx = document.getElementById('salaryChart').getContext('2d');
+    // Debugging: log data to console
+    console.log('Annual Salary:', annualSalary);
+    console.log('Effort Coverage:', effortCoverage);
+    console.log('Salaries:', salaries);
+    console.log('Current Salary:', currentSalary);
 
-    // Destroy any existing chart to avoid overlap
-    /*
-    if (window.salaryChart) {
-        window.salaryChart.destroy();
-    }
-    */
-    window.salaryChart = new Chart(ctx, {
-        type: 'line',
+    const ctx = document.getElementById('salaryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'scatter',
         data: {
-            labels: effortLevels,
             datasets: [{
                 label: 'Salaries at Different Effort Levels',
-                data: salaries,
+                data: effortLevels.map((effort, index) => ({ x: effort, y: salaries[index] })),
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                fill: false,
-                tension: 0.1 // Smoothing the line
+                borderWidth: 1
             },
             {
                 label: 'Current Effort Level',
-                data: effortLevels.map(effort => effort === effortCoverage ? currentSalary : null),
-                pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
-                pointBorderColor: 'rgba(255, 99, 132, 1)',
-                pointBorderWidth: 2,
-                showLine: false,
-                pointRadius: 5
+                data: [{ x: effortCoverage, y: currentSalary }],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
             }]
         },
         options: {
-            plugins: {
-                annotation: {
-                    annotations: {
-                        line1: {
-                            type: 'line',
-                            yMin: 0,
-                            yMax: currentSalary,
-                            xMin: effortCoverage,
-                            xMax: effortCoverage,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 2,
-                            borderDash: [10, 5],
-                            label: {
-                                content: 'Current Effort Level',
-                                enabled: true,
-                                position: 'start'
-                            }
-                        }
-                    }
-                }
-            },
             scales: {
                 x: {
                     type: 'linear',
