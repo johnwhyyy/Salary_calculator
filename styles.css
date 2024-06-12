@@ -30,7 +30,7 @@ label {
     margin: 10px 0 5px;
 }
 
-input {
+input, select {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
@@ -52,9 +52,9 @@ button:hover {
 
 #results {
     margin-top: 20px;
-    text-align: center;
+    display: none;
 }
 
-#salaryChart {
-    max-width: 100%;
+#incentivizedPlan, #legacyPlan {
+    margin-bottom: 20px;
 }
