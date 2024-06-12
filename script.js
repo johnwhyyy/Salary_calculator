@@ -11,7 +11,6 @@ function calculateAndPlotSalary() {
         "Professor": { percentile25: 192236, median: 223255 }
     };
 
-    const today = new Date();
     const thresholdDate = new Date('2024-07-01');
 
     if (isNaN(userSalary) || isNaN(effortCoverage) || isNaN(hireDate.getTime())) {
@@ -74,6 +73,10 @@ function calculateAndPlotSalary() {
         },
         options: {
             plugins: {
+                title: {
+                    display: true,
+                    text: 'Incentivized Plan'
+                },
                 annotation: {
                     annotations: {
                         line1: {
@@ -127,6 +130,12 @@ function calculateAndPlotSalary() {
             }]
         },
         options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Legacy Plan'
+                }
+            },
             scales: {
                 x: {
                     type: 'linear',
@@ -147,11 +156,17 @@ function calculateAndPlotSalary() {
     });
 
     if (hireDate < thresholdDate) {
-        document.getElementById('results').style.display = 'block';
+        document.getElementById('incentivizedPlan').style.display = 'flex';
+        document.getElementById('legacyPlan').style.display = 'flex';
+        document.getElementById('message').style.display = 'none';
     } else {
-        document.getElementById('results').style.display = 'none';
-        alert('Incentivized plan only for hires after 7/1/2024');
+        document.getElementById('incentivizedPlan').style.display = 'flex';
+        document.getElementById('legacyPlan').style.display = 'none';
+        document.getElementById('message').innerHTML = `Hire after ${thresholdDate.toLocaleDateString()} must follow the incentive plan.`;
+        document.getElementById('message').style.display = 'block';
     }
+
+    document.getElementById('results').style.display = 'flex';
 }
 
 function calculateSalary(annualSalary, effortCoverage) {
