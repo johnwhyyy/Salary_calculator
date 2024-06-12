@@ -1,13 +1,15 @@
 function calculateAndPlotSalary() {
     const rank = document.getElementById('rank').value;
+    const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
+
     const rankSalaries = {
         "Instructor": 75675,
         "Assistant Professor": 123274,
         "Associate Professor": 156000,
         "Professor": 223255
     };
+
     const annualSalary = rankSalaries[rank];
-    const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
 
     if (isNaN(annualSalary) || isNaN(effortCoverage)) {
         alert("Please enter valid numbers for salary and effort coverage.");
@@ -20,10 +22,16 @@ function calculateAndPlotSalary() {
         effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
     }
     
-    const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
-    const currentSalary = calculateSalary(annualSalary, effortCoverage);
+    const salaries = effortLevels.map(effort => {
+        const salary = calculateSalary(annualSalary, effort);
+        console.log(`Effort: ${effort}, Salary: ${salary}`); // Debugging statement
+        return {
+            x: effort,
+            y: salary
+        };
+    });
 
-    // Additional information based on effort coverage
+    const currentSalary = calculateSalary(annualSalary, effortCoverage);
     const additionalInfo = effortLevels.map(effort => calculateAdditionalInfo(effort));
 
     console.log('Annual Salary:', annualSalary);
@@ -42,7 +50,6 @@ function calculateAndPlotSalary() {
     window.salaryChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: effortLevels,
             datasets: [{
                 label: 'Salaries at Different Effort Levels',
                 data: salaries,
@@ -54,7 +61,7 @@ function calculateAndPlotSalary() {
             },
             {
                 label: 'Current Effort Level',
-                data: effortLevels.map(effort => (effort === effortCoverage ? currentSalary : null)),
+                data: [{x: effortCoverage, y: currentSalary}],
                 pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
                 pointBorderColor: 'rgba(255, 99, 132, 1)',
                 pointBorderWidth: 2,
