@@ -1,5 +1,12 @@
 function calculateAndPlotSalary() {
-    const annualSalary = parseFloat(document.getElementById('annualSalary').value);
+    const rank = document.getElementById('rank').value;
+    const rankSalaries = {
+        "Instructor": 75675,
+        "Assistant Professor": 123274,
+        "Associate Professor": 156000,
+        "Professor": 223255
+    };
+    const annualSalary = rankSalaries[rank];
     const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
 
     if (isNaN(annualSalary) || isNaN(effortCoverage)) {
@@ -7,7 +14,12 @@ function calculateAndPlotSalary() {
         return;
     }
 
-    const effortLevels = [10, 25, 50, 60, 75, 80, 100];
+    const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
+    if (!effortLevels.includes(effortCoverage)) {
+        effortLevels.push(effortCoverage);
+        effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
+    }
+    
     const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
     const currentSalary = calculateSalary(annualSalary, effortCoverage);
 
