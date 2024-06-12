@@ -4,9 +4,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 150vh;
     margin: 0;
-    overflow: hidden; /* Prevent scrolling */
 }
 
 .container {
@@ -14,33 +13,28 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 800px; /* Increase the max-width */
+    max-width: 1000px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
 }
 
 form {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 label {
     margin: 10px 0 5px;
 }
 
-input, select {
+input {
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 100%; /* Ensure the input fields are responsive */
 }
 
 button {
@@ -58,23 +52,9 @@ button:hover {
 
 #results {
     margin-top: 20px;
-    display: none;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
 }
 
-.chart-container {
-    width: 100%;
-    max-width: 600px; /* Adjust the max-width to ensure charts fit */
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-canvas {
-    width: 100% !important;
-    height: auto !important;
+#salaryChart {
+    max-width: 100%;
 }
