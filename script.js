@@ -1,20 +1,25 @@
 function calculateAndPlotSalary() {
     const rank = document.getElementById('rank').value;
+    const userSalary = parseFloat(document.getElementById('annualSalary').value);
     const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
+    const hireDate = new Date(document.getElementById('hireDate').value);
 
     const rankSalaries = {
-        "Instructor": 75675,
-        "Assistant Professor": 123274,
-        "Associate Professor": 156000,
-        "Professor": 223255
+        "Instructor": { percentile25: 69044, median: 75675 },
+        "Assistant Professor": { percentile25: 103416, median: 123274 },
+        "Associate Professor": { percentile25: 136800, median: 156000 },
+        "Professor": { percentile25: 192236, median: 223255 }
     };
 
-    const annualSalary = rankSalaries[rank];
+    const today = new Date();
+    const thresholdDate = new Date('2024-07-01');
 
-    if (isNaN(annualSalary) || isNaN(effortCoverage)) {
-        alert("Please enter valid numbers for salary and effort coverage.");
+    if (isNaN(userSalary) || isNaN(effortCoverage) || isNaN(hireDate.getTime())) {
+        alert("Please enter valid numbers for salary, effort coverage, and hire date.");
         return;
     }
+
+    const annualSalary = rankSalaries[rank].median;
 
     const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
     if (!effortLevels.includes(effortCoverage)) {
@@ -22,32 +27,35 @@ function calculateAndPlotSalary() {
         effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
     }
     
-    const salaries = effortLevels.map(effort => ({
+    const incentivizedSalaries = effortLevels.map(effort => ({
         x: effort,
         y: calculateSalary(annualSalary, effort)
     }));
+    const currentIncentivizedSalary = calculateSalary(annualSalary, effortCoverage);
 
-    const currentSalary = calculateSalary(annualSalary, effortCoverage);
+    const legacySalary = Math.max(rankSalaries[rank].percentile25, userSalary);
+    const legacySalaries = effortLevels.map(effort => ({
+        x: effort,
+        y: legacySalary
+    }));
 
-    console.log('Annual Salary:', annualSalary);
-    console.log('Effort Coverage:', effortCoverage);
-    console.log('Effort Levels:', effortLevels);
-    console.log('Salaries:', salaries);
-    console.log('Current Salary:', currentSalary);
+    const ctxIncentivized = document.getElementById('incentivizedChart').getContext('2d');
+    const ctxLegacy = document.getElementById('legacyChart').getContext('2d');
 
-    const ctx = document.getElementById('salaryChart').getContext('2d');
-
-    // Check if chart instance exists and destroy it
-    if (window.salaryChart instanceof Chart) {
-        window.salaryChart.destroy();
+    // Check if chart instances exist and destroy them
+    if (window.incentivizedChart instanceof Chart) {
+        window.incentivizedChart.destroy();
+    }
+    if (window.legacyChart instanceof Chart) {
+        window.legacyChart.destroy();
     }
 
-    window.salaryChart = new Chart(ctx, {
+    window.incentivizedChart = new Chart(ctxIncentivized, {
         type: 'line',
         data: {
             datasets: [{
                 label: 'Salaries at Different Effort Levels',
-                data: salaries,
+                data: incentivizedSalaries,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
@@ -56,7 +64,7 @@ function calculateAndPlotSalary() {
             },
             {
                 label: 'Current Effort Level',
-                data: [{x: effortCoverage, y: currentSalary}],
+                data: [{ x: effortCoverage, y: currentIncentivizedSalary }],
                 pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
                 pointBorderColor: 'rgba(255, 99, 132, 1)',
                 pointBorderWidth: 2,
@@ -71,7 +79,7 @@ function calculateAndPlotSalary() {
                         line1: {
                             type: 'line',
                             yMin: 0,
-                            yMax: currentSalary,
+                            yMax: currentIncentivizedSalary,
                             xMin: effortCoverage,
                             xMax: effortCoverage,
                             borderColor: 'rgba(255, 99, 132, 1)',
@@ -104,6 +112,46 @@ function calculateAndPlotSalary() {
             }
         }
     });
+
+    window.legacyChart = new Chart(ctxLegacy, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Legacy Plan Salary',
+                data: legacySalaries,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false,
+                tension: 0.1 // Smoothing the line
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    title: {
+                        display: true,
+                        text: 'Effort Coverage (%)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Salary ($)'
+                    }
+                }
+            }
+        }
+    });
+
+    if (hireDate < thresholdDate) {
+        document.getElementById('results').style.display = 'block';
+    } else {
+        document.getElementById('results').style.display = 'none';
+        alert('Incentivized plan only for hires after 7/1/2024');
+    }
 }
 
 function calculateSalary(annualSalary, effortCoverage) {
