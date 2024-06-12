@@ -7,10 +7,17 @@ function calculateAndPlotSalary() {
         return;
     }
 
-    const effortLevels = [10, 25, 50, 60, 75, 80, 100];
-    const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
+    const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
+    if (!effortLevels.includes(effortCoverage)) {
+        effortLevels.push(effortCoverage);
+        effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
+    }
     
+    const salaries = effortLevels.map(effort => calculateSalary(annualSalary, effort));
     const currentSalary = calculateSalary(annualSalary, effortCoverage);
+
+    // Additional information based on effort coverage
+    const additionalInfo = effortLevels.map(effort => calculateAdditionalInfo(effort));
 
     console.log('Annual Salary:', annualSalary);
     console.log('Effort Coverage:', effortCoverage);
@@ -68,6 +75,23 @@ function calculateAndPlotSalary() {
                             }
                         }
                     }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const effort = context.raw.x;
+                            const info = additionalInfo.find(info => info.effort === effort);
+                            if (info) {
+                                return [
+                                    `Salary: $${context.raw.y}`,
+                                    `Merit-Based Increase: ${info.meritBasedIncrease}`,
+                                    `Exceptional Merit-Based Increase: ${info.exceptionalMeritBasedIncrease}`,
+                                    `Bonus: ${info.bonus}`
+                                ];
+                            }
+                            return `Salary: $${context.raw.y}`;
+                        }
+                    }
                 }
             },
             scales: {
@@ -102,4 +126,31 @@ function calculateSalary(annualSalary, effortCoverage) {
         calculatedSalary = annualSalary;
     }
     return calculatedSalary;
+}
+
+function calculateAdditionalInfo(effortCoverage) {
+    let meritBasedIncrease = 'Not Eligible';
+    let exceptionalMeritBasedIncrease = 'Not Eligible';
+    let bonus = 'Not Eligible';
+
+    if (effortCoverage < 25) {
+        bonus = 'Eligible';
+    } else if (effortCoverage <= 50) {
+        meritBasedIncrease = 'Merit at minimum equal to 1.5%';
+        bonus = 'Eligible';
+    } else if (effortCoverage <= 75) {
+        meritBasedIncrease = 'Merit at minimum equal to Peer Institution Index';
+        bonus = 'Eligible';
+    } else {
+        meritBasedIncrease = 'Merit at minimum equal to Peer Institution Index';
+        exceptionalMeritBasedIncrease = 'Eligible';
+        bonus = 'Eligible';
+    }
+
+    return {
+        effort: effortCoverage,
+        meritBasedIncrease,
+        exceptionalMeritBasedIncrease,
+        bonus
+    };
 }
