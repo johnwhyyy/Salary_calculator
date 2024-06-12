@@ -24,6 +24,7 @@ function calculateAndPlotSalary() {
     console.log('Effort Levels:', effortLevels);
     console.log('Salaries:', salaries);
     console.log('Current Salary:', currentSalary);
+    //
 
     const ctx = document.getElementById('salaryChart').getContext('2d');
 
