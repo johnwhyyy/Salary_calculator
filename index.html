@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Salary Calculator</h1>
+        <h1>GUMC New Incentivized Plan Faculty Salary Calculator</h1>
         <form id="salaryForm">
             <label for="rank">Current Rank:</label>
             <select id="rank" name="rank" required>
@@ -23,21 +23,23 @@
             <label for="annualSalary">Current Annual Salary:</label>
             <input type="number" id="annualSalary" name="annualSalary" required>
 
-            <label for="effortCoverage">Effort Coverage (%):</label>
+            <label for="effortCoverage">Latest Effort Coverage (%):</label>
             <input type="number" id="effortCoverage" name="effortCoverage" required>
 
-            <label for="hireDate">Hire Date:</label>
+            <label for="hireDate">Hire Date (an estimated date is acceptable):</label>
             <input type="date" id="hireDate" name="hireDate" required>
 
-            <button type="button" onclick="calculateAndPlotSalary()">Calculate</button>
+            <button type="button" onclick="calculateTwice()">Calculate</button>
         </form>
 
+        <p id="incentivizedPlanMessage" style="display: none; color: blue;"></p>
+
         <div id="results">
-            <div class="chart-container" id="incentivizedPlan">
+            <div id="incentivizedPlan">
                 <h2>Incentivized Plan</h2>
                 <canvas id="incentivizedChart"></canvas>
             </div>
-            <div class="chart-container" id="legacyPlan">
+            <div id="legacyPlan">
                 <h2>Legacy Plan</h2>
                 <canvas id="legacyChart"></canvas>
             </div>

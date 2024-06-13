@@ -1,3 +1,8 @@
+function calculateTwice() {
+    calculateAndPlotSalary();
+    calculateAndPlotSalary();
+}
+
 function calculateAndPlotSalary() {
     const rank = document.getElementById('rank').value;
     const userSalary = parseFloat(document.getElementById('annualSalary').value);
@@ -10,14 +15,14 @@ function calculateAndPlotSalary() {
         "Associate Professor": { percentile25: 136800, median: 156000 },
         "Professor": { percentile25: 192236, median: 223255 }
     };
-
-    const thresholdDate = new Date('2024-07-01');
+    //Should be changed base on effective date
+    const thresholdDate = new Date('2024-07-01T00:00:00-04:00'); // Set threshold date to 2024-07-01 at midnight ET (Eastern Daylight Time)
 
     if (isNaN(userSalary) || isNaN(effortCoverage) || isNaN(hireDate.getTime())) {
         alert("Please enter valid numbers for salary, effort coverage, and hire date.");
         return;
     }
-
+    //Calculate the annual salary for each effort level based on the rank for incentivized plan
     const annualSalary = rankSalaries[rank].median;
 
     const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
@@ -25,7 +30,7 @@ function calculateAndPlotSalary() {
         effortLevels.push(effortCoverage);
         effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
     }
-    
+    // Calculate the  salaries for each effort level for legacy plan
     const incentivizedSalaries = effortLevels.map(effort => ({
         x: effort,
         y: calculateSalary(annualSalary, effort)
@@ -156,15 +161,17 @@ function calculateAndPlotSalary() {
     });
 
     if (hireDate < thresholdDate) {
-        document.getElementById('incentivizedPlan').style.display = 'flex';
-        document.getElementById('legacyPlan').style.display = 'flex';
-    } else {
-        document.getElementById('incentivizedPlan').style.display = 'none';
-        document.getElementById('legacyPlan').style.display = 'none';
-        alert('Incentivized plan only for hires after 7/1/2024');
+        document.getElementById('incentivizedPlan').style.display = 'block';
+        document.getElementById('legacyPlan').style.display = 'block';
+    } 
+    else {
+        document.getElementById('incentivizedPlan').style.display = 'block';
+        document.getElementById('legacyPlan').style.display = "none";
+        incentivizedPlanMessage.style.display = 'block';
+        incentivizedPlanMessage.textContent = "All faculties hired after " + thresholdDate.toLocaleDateString() + " follow the incentivized plan.";
     }
 
-    document.getElementById('results').style.display = 'flex';
+    document.getElementById('results').style.display = 'block';
 }
 
 function calculateSalary(annualSalary, effortCoverage) {
