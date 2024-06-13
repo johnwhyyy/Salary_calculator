@@ -5,6 +5,7 @@ function calculateTwice() {
 
 function calculateAndPlotSalary() {
     const rank = document.getElementById('rank').value;
+    const tenureStatus = document.getElementById('tenureStatus').value;
     const userSalary = parseFloat(document.getElementById('annualSalary').value);
     const effortCoverage = parseFloat(document.getElementById('effortCoverage').value);
     const hireDate = new Date(document.getElementById('hireDate').value);
@@ -15,27 +16,35 @@ function calculateAndPlotSalary() {
         "Associate Professor": { percentile25: 136800, median: 156000 },
         "Professor": { percentile25: 192236, median: 223255 }
     };
-    //Should be changed base on effective date
+
     const thresholdDate = new Date('2024-07-01T00:00:00-04:00'); // Set threshold date to 2024-07-01 at midnight ET (Eastern Daylight Time)
 
     if (isNaN(userSalary) || isNaN(effortCoverage) || isNaN(hireDate.getTime())) {
         alert("Please enter valid numbers for salary, effort coverage, and hire date.");
         return;
     }
-    //Calculate the annual salary for each effort level based on the rank for incentivized plan
+
     const annualSalary = rankSalaries[rank].median;
 
     const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
     if (!effortLevels.includes(effortCoverage)) {
         effortLevels.push(effortCoverage);
-        effortLevels.sort((a, b) => a - b); // Ensure the array is sorted
+        effortLevels.sort((a, b) => a - b);
     }
-    // Calculate the  salaries for each effort level for legacy plan
-    const incentivizedSalaries = effortLevels.map(effort => ({
-        x: effort,
-        y: calculateSalary(annualSalary, effort)
-    }));
-    const currentIncentivizedSalary = calculateSalary(annualSalary, effortCoverage);
+
+    let incentivizedSalaries;
+    if (tenureStatus === 'Tenure-eligible') {
+        incentivizedSalaries = effortLevels.map(effort => ({
+            x: effort,
+            y: annualSalary
+        }));
+    } else {
+        incentivizedSalaries = effortLevels.map(effort => ({
+            x: effort,
+            y: calculateSalary(annualSalary, effort)
+        }));
+    }
+    const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? annualSalary : calculateSalary(annualSalary, effortCoverage);
 
     const legacySalary = Math.max(rankSalaries[rank].percentile25, userSalary);
     const legacySalaries = effortLevels.map(effort => ({
@@ -46,7 +55,6 @@ function calculateAndPlotSalary() {
     const ctxIncentivized = document.getElementById('incentivizedChart').getContext('2d');
     const ctxLegacy = document.getElementById('legacyChart').getContext('2d');
 
-    // Check if chart instances exist and destroy them
     if (window.incentivizedChart instanceof Chart) {
         window.incentivizedChart.destroy();
     }
@@ -58,13 +66,13 @@ function calculateAndPlotSalary() {
         type: 'line',
         data: {
             datasets: [{
-                label: 'Current Effort Level',
+                label: 'Salary at This Effort Level',
                 data: incentivizedSalaries,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
                 fill: false,
-                tension: 0.1 // Smoothing the line
+                tension: 0.1
             },
             {
                 label: 'Salary at Current Effort Level',
@@ -131,7 +139,7 @@ function calculateAndPlotSalary() {
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
                 fill: false,
-                tension: 0.1 // Smoothing the line
+                tension: 0.1
             }]
         },
         options: {
@@ -163,15 +171,22 @@ function calculateAndPlotSalary() {
     const hoverNote = document.getElementById('hoverNote');
     hoverNote.style.display = 'block';
 
+    const incentivizedPlanMessage = document.getElementById('incentivizedPlanMessage');
+    if (tenureStatus === 'Tenure-eligible') {
+        incentivizedPlanMessage.textContent = "Full Salary Coverage guaranteed in the tenure probationary period";
+        incentivizedPlanMessage.style.display = 'block';
+    } else {
+        incentivizedPlanMessage.style.display = 'none';
+    }
+
     if (hireDate < thresholdDate) {
         document.getElementById('incentivizedPlan').style.display = 'block';
         document.getElementById('legacyPlan').style.display = 'block';
-    } 
-    else {
+    } else {
         document.getElementById('incentivizedPlan').style.display = 'block';
         document.getElementById('legacyPlan').style.display = "none";
-        incentivizedPlanMessage.style.display = 'block';
         incentivizedPlanMessage.textContent = "All faculties hired after " + thresholdDate.toLocaleDateString() + " follow the incentivized plan.";
+        incentivizedPlanMessage.style.display = 'block';
     }
 
     document.getElementById('results').style.display = 'block';

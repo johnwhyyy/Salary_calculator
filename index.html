@@ -20,6 +20,12 @@
                 <option value="Professor">Professor</option>
             </select>
 
+            <label for="tenureStatus">Tenure Status:</label>
+            <select id="tenureStatus" name="tenureStatus" required>
+                <option value="Tenured">Tenured</option>
+                <option value="Tenure-eligible">Tenure-eligible</option>
+            </select>
+
             <label for="annualSalary">Current Annual Salary ($):</label>
             <input type="number" id="annualSalary" name="annualSalary" required>
 
@@ -33,7 +39,7 @@
         </form>
         
         <p id="hoverNote" style="display: none; color: blue; text-align: center;">Please hover over the points on the charts to view the exact salary</p>
-        <p id="incentivizedPlanMessage" style="display: none; color: blue;"></p>
+        <p id="incentivizedPlanMessage" style="display: none; color: blue; text-align: center;"></p>
 
         <div id="results">
             <div id="incentivizedPlan">
