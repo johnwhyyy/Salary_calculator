@@ -58,7 +58,7 @@ function calculateAndPlotSalary() {
         type: 'line',
         data: {
             datasets: [{
-                label: 'Salaries at Different Effort Levels',
+                label: 'Current Effort Level',
                 data: incentivizedSalaries,
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -67,7 +67,7 @@ function calculateAndPlotSalary() {
                 tension: 0.1 // Smoothing the line
             },
             {
-                label: 'Current Effort Level',
+                label: 'Salary at Current Effort Level',
                 data: [{ x: effortCoverage, y: currentIncentivizedSalary }],
                 pointBackgroundColor: 'rgba(255, 99, 132, 0.2)',
                 pointBorderColor: 'rgba(255, 99, 132, 1)',
@@ -159,6 +159,9 @@ function calculateAndPlotSalary() {
             }
         }
     });
+
+    const hoverNote = document.getElementById('hoverNote');
+    hoverNote.style.display = 'block';
 
     if (hireDate < thresholdDate) {
         document.getElementById('incentivizedPlan').style.display = 'block';

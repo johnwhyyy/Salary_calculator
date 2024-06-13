@@ -20,7 +20,7 @@
                 <option value="Professor">Professor</option>
             </select>
 
-            <label for="annualSalary">Current Annual Salary:</label>
+            <label for="annualSalary">Current Annual Salary ($):</label>
             <input type="number" id="annualSalary" name="annualSalary" required>
 
             <label for="effortCoverage">Latest Effort Coverage (%):</label>
@@ -31,7 +31,8 @@
 
             <button type="button" onclick="calculateTwice()">Calculate</button>
         </form>
-
+        
+        <p id="hoverNote" style="display: none; color: blue; text-align: center;">Please hover over the points on the charts to view the exact salary</p>
         <p id="incentivizedPlanMessage" style="display: none; color: blue;"></p>
 
         <div id="results">
