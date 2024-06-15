@@ -52,6 +52,7 @@ class SalaryCalculator {
         });
         if (allFilled) {
             document.getElementById('salaryForm').style.display = 'none';
+            document.getElementById('privacyNote').style.display = 'none';
         }
     }
 
@@ -278,6 +279,7 @@ class SalaryCalculator {
         document.getElementById('salaryForm').reset();
         document.getElementById('salaryForm').style.display = 'flex';
         document.getElementById('salaryForm').style.flexDirection = 'column';
+        document.getElementById('privacyNote').style.display = 'block';
         document.getElementById('results').style.display = 'none';
         document.getElementById('hoverNote').style.display = 'none';
         document.getElementById('incentivizedPlanMessage').style.display = 'none';
