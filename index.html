@@ -11,7 +11,7 @@
 <body>
     <div class="container">
         <h1>GUMC New Incentivized Plan Faculty Salary Calculator</h1>
-        <form id="salaryForm">
+        <form id="salaryForm" oninput="resetNextRank()">
             <label for="rank">Current Rank:</label>
             <select id="rank" name="rank" required>
                 <option value="Instructor">Instructor</option>
@@ -38,18 +38,22 @@
             <button type="button" onclick="calculateTwice()">Calculate</button>
         </form>
         
-        <p id="hoverNote" style="display: none; color: blue; text-align: center;">Please hover over the points on the charts to view the exact salary</p>
-        <p id="incentivizedPlanMessage" style="display: none; color: blue; text-align: center;"></p>
+        <p id="hoverNote" style="display: none; color: rgb(13, 103, 228); text-align: center;">Please hover over the points on the charts to view the exact salary</p>
+        <p id="incentivizedPlanMessage" style="display: none; color: rgb(13, 103, 228); text-align: center;"></p>
 
         <div id="results">
             <div id="incentivizedPlan">
-                <h2>Incentivized Plan</h2>
+                <h2 id="currentRankHeading">Salary Under Incentivized Plan VS. Legacy Plan (At Current Rank)</h2>
                 <canvas id="incentivizedChart"></canvas>
             </div>
-            <div id="legacyPlan">
-                <h2>Legacy Plan</h2>
-                <canvas id="legacyChart"></canvas>
+            <div id="nextRankResults" style="display: none;">
+                <h2 id="nextRankHeading">Salary Under Incentivized Plan VS. Legacy Plan (At Next Rank)</h2>
+                <canvas id="nextRankChart"></canvas>
             </div>
+            <button id="nextRankButton" style="display: none;" onclick="calculateNextRank()">Click to view your salary when you are promoted to the next rank</button>
+            </div>
+            <br>
+            <button id="resetButton" style="display: none;" onclick="resetAndRecalculate()">Reset and Recalculate</button>
         </div>
     </div>
 
