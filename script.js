@@ -1,13 +1,13 @@
 class SalaryCalculator {
     constructor() {
         this.rankSalaries = {
-            "Instructor": { percentile25: 69044, median: 75675 },
-            "Assistant Professor": { percentile25: 103416, median: 123274 },
-            "Associate Professor": { percentile25: 136800, median: 156000 },
-            "Professor": { percentile25: 192236, median: 223255 }
+            "Assistant Professor": { percentile25: 103416, median: 123274, nextRankRaise: 9991 },
+            "Associate Professor": { percentile25: 136800, median: 156000, nextRankRaise: 19982 },
+            "Professor": { percentile25: 192236, median: 223255, nextRankRaise: 0 }
         };
-        this.thresholdDate = new Date('2024-07-01T00:00:00-04:00');
-        this.initEventListeners();
+        document.addEventListener('DOMContentLoaded', () => {
+            this.initEventListeners();
+        });
     }
 
     initEventListeners() {
@@ -22,8 +22,7 @@ class SalaryCalculator {
             rank: document.getElementById('rank').value,
             tenureStatus: document.getElementById('tenureStatus').value,
             userSalary: parseFloat(document.getElementById('annualSalary').value),
-            effortCoverage: parseFloat(document.getElementById('effortCoverage').value),
-            hireDate: new Date(document.getElementById('hireDate').value)
+            effortCoverage: parseFloat(document.getElementById('effortCoverage').value)
         };
     }
 
@@ -64,11 +63,15 @@ class SalaryCalculator {
     }
 
     calculateAndPlotSalary() {
-        const { rank, tenureStatus, userSalary, effortCoverage, hireDate } = this.getFormData();
-        const annualSalary = this.rankSalaries[rank].median;
+        const { rank, tenureStatus, userSalary, effortCoverage } = this.getFormData();
+        //The base pay for inventiviezed plan is the median salary of current rank or current pay, whatever is higher
+        let annualSalary = this.rankSalaries[rank].median;
+        if (userSalary > annualSalary) {
+            annualSalary = userSalary;
+        }
 
-        if (isNaN(userSalary) || isNaN(effortCoverage) || isNaN(hireDate.getTime())) {
-            alert("Please enter valid numbers for salary, effort coverage, and hire date.");
+        if (isNaN(userSalary) || isNaN(effortCoverage)) {
+            alert("Please enter valid numbers for salary and effort coverage.");
             return;
         }
 
@@ -76,19 +79,19 @@ class SalaryCalculator {
 
         const incentivizedSalaries = this.getIncentivizedSalaries(tenureStatus, annualSalary, effortLevels);
         const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? annualSalary : this.calculateSalary(annualSalary, effortCoverage);
-
+        //The pay for legacy plan is the 25%tile salary of current rank or current pay, whatever is higher
         const legacySalary = Math.max(this.rankSalaries[rank].percentile25, userSalary);
         const legacySalaries = effortLevels.map(effort => ({ x: effort, y: legacySalary }));
 
         this.plotChart('incentivizedChart', incentivizedSalaries, currentIncentivizedSalary, legacySalaries, effortCoverage);
 
         this.displayHoverNote();
-        this.displayIncentivizedPlanMessage(tenureStatus, hireDate);
+        this.displayIncentivizedPlanMessage(tenureStatus);
         this.showResults(rank);
     }
 
     getEffortLevels(effortCoverage) {
-        const effortLevels = [10, 20, 30, 40, 50, 60, 70, 75, 80, 100];
+        const effortLevels = [45, 47.5, 50, 52.5, 55, 57.5, 60, 62.5, 65, 67.5, 70, 72.5, 75, 77.5, 80];
         if (!effortLevels.includes(effortCoverage)) {
             effortLevels.push(effortCoverage);
             effortLevels.sort((a, b) => a - b);
@@ -152,7 +155,7 @@ class SalaryCalculator {
                         annotations: {
                             line1: {
                                 type: 'line',
-                                yMin: 0,
+                                yMin: legacySalaries[0].y,
                                 yMax: currentIncentivizedSalary,
                                 xMin: effortCoverage,
                                 xMax: effortCoverage,
@@ -162,7 +165,7 @@ class SalaryCalculator {
                                 label: {
                                     content: 'Current Effort Level',
                                     enabled: true,
-                                    position: 'start',
+                                    position: 'end',
                                     xAdjust: -10,
                                     yAdjust: 0,
                                     backgroundColor: 'rgba(85,85,85, 0.8)',
@@ -195,21 +198,13 @@ class SalaryCalculator {
         document.getElementById('hoverNote').style.display = 'block';
     }
 
-    displayIncentivizedPlanMessage(tenureStatus, hireDate) {
+    displayIncentivizedPlanMessage(tenureStatus) {
         const incentivizedPlanMessage = document.getElementById('incentivizedPlanMessage');
         if (tenureStatus === 'Tenure-eligible') {
             incentivizedPlanMessage.textContent = "Full Salary Coverage guaranteed in the tenure probationary period";
             incentivizedPlanMessage.style.display = 'block';
         } else {
             incentivizedPlanMessage.style.display = 'none';
-        }
-
-        if (hireDate < this.thresholdDate) {
-            document.getElementById('incentivizedPlan').style.display = 'block';
-        } else {
-            document.getElementById('incentivizedPlan').style.display = 'block';
-            incentivizedPlanMessage.textContent = "All faculties hired after " + this.thresholdDate.toLocaleDateString() + " follow the incentivized plan.";
-            incentivizedPlanMessage.style.display = 'block';
         }
     }
 
@@ -240,15 +235,20 @@ class SalaryCalculator {
     }
 
     calculateAndPlotNextRankSalary(nextRank) {
-        const { tenureStatus, userSalary, effortCoverage } = this.getFormData();
-        const annualSalary = this.rankSalaries[nextRank].median;
+        const {rank, tenureStatus, userSalary, effortCoverage } = this.getFormData();
+        //The base pay for inventiviezed plan is the median salary of next rank or current rank pay + raise when promoted, whatever is higher
+        let annualSalary = this.rankSalaries[nextRank].median;
+        if (userSalary + this.rankSalaries[rank].nextRankRaise > this.rankSalaries[nextRank].median) {
+            annualSalary = userSalary + this.rankSalaries[rank].nextRankRaise;
+        }
 
         const effortLevels = this.getEffortLevels(effortCoverage);
 
         const incentivizedSalaries = this.getIncentivizedSalaries(tenureStatus, annualSalary, effortLevels);
         const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? annualSalary : this.calculateSalary(annualSalary, effortCoverage);
 
-        const legacySalary = Math.max(this.rankSalaries[nextRank].percentile25, userSalary);
+        //The pay for legacy plan is the 25%tile salary of next rank or current pay + raise when promoted, whatever is higher
+        const legacySalary = Math.max(this.rankSalaries[nextRank].percentile25, userSalary+this.rankSalaries[rank].nextRankRaise);
         const legacySalaries = effortLevels.map(effort => ({ x: effort, y: legacySalary }));
 
         this.plotChart('nextRankChart', incentivizedSalaries, currentIncentivizedSalary, legacySalaries, effortCoverage);
@@ -257,7 +257,7 @@ class SalaryCalculator {
     }
 
     getNextRank(rank) {
-        const ranks = ["Instructor", "Assistant Professor", "Associate Professor", "Professor"];
+        const ranks = ["Assistant Professor", "Associate Professor", "Professor"];
         const currentIndex = ranks.indexOf(rank);
         return currentIndex < ranks.length - 1 ? ranks[currentIndex + 1] : null;
     }
@@ -276,6 +276,7 @@ class SalaryCalculator {
     }
 
     resetAndRecalculate() {
+        this.resetNextRank();
         document.getElementById('salaryForm').reset();
         document.getElementById('salaryForm').style.display = 'flex';
         document.getElementById('salaryForm').style.flexDirection = 'column';
