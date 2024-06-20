@@ -1,8 +1,6 @@
-class DataTable {
-    constructor() {
-        this.tableElement = document.createElement('table');
-        this.tableElement.className = 'data-table';
-        document.body.appendChild(this.tableElement);
+export default class DataTable {
+    constructor(tableId) {
+        this.tableElement = document.getElementById(tableId);
     }
 
     createTable(headers, data) {
@@ -64,11 +62,4 @@ class DataTable {
             return annualSalary;
         }
     }
-}
-
-// Export the DataTable class for use in other files
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = DataTable;
-} else {
-    window.DataTable = DataTable;
 }
