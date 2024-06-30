@@ -9,5 +9,6 @@ export default class EventHandler {
         document.getElementById('calculateButton').addEventListener('click', () => this.salaryCalculator.calculateTwice());
         document.getElementById('nextRankButton').addEventListener('click', () => this.salaryCalculator.calculateNextRank());
         document.getElementById('resetButton').addEventListener('click', () => this.salaryCalculator.resetAndRecalculate());
+        document.getElementById('showProjectionButton').addEventListener('click', () => this.salaryCalculator.showProjection());
     }
 }

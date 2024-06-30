@@ -56,6 +56,7 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
+    align-items: center;
     transition: background 0.3s;
 }
 
@@ -98,4 +99,54 @@ button:hover {
 
 #incentivizedPlan, #legacyPlan {
     margin-bottom: 20px;
+}
+
+/* Projection Panel Styles */
+.projection-header, .projection-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.projection-header span, .projection-row label {
+    flex: 1;
+    text-align: left;
+}
+
+.projection-row input[type="number"] {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.projection-row input[type="checkbox"] {
+    flex: 1;
+    margin-left: 10px;
+    transform: scale(1.5);
+}
+
+#projectionForm {
+    margin-top: 20px;
+}
+
+#projectionTableContent {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#projectionTableContent th, #projectionTableContent td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+#projectionChartCanvas {
+    width: 100%;
+    height: 400px;
+    margin-top: 20px;
+}
+
+#projectionTable, #projectionChart {
+    display: none;
 }

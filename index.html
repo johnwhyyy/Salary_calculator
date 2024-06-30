@@ -63,6 +63,45 @@
             <button id="nextRankButton" style="display: none;">Click to view your salary when you are promoted to the next rank</button>
             <br>
             <button id="resetButton" style="display: none;">Reset and Recalculate</button>
+            <br>
+            <button id="showProjectionButton" style="display: none;">Advanced 10-year Projection</button>
+        </div>
+        <div id="projectionPanel" style="display: none;">
+            <!-- Projection Form -->
+            <div id="projectionForm">
+                <h2>Projection of Earnings Over the Next 10 Years</h2>
+                <br>
+                <form id="projectionFormElements">
+                    <div class="projection-header">
+                        <span>Year</span>
+                        <span>Coverage %</span>
+                        <span>Assume Getting Promoted This Year</span>
+                    </div>
+                </form>
+                <button id="calculateProjectionButton" type="button">Calculate Projection</button>
+            </div>
+
+             <!-- Projection Chart -->
+             <div id="projectionChart" style="display: none">
+                <h2>Multi-year Salary Projection</h2>
+                <canvas id="projectionChartCanvas"></canvas>
+            </div>
+
+             <!-- Difference Chart -->
+            <div id="differenceChart" style="display: none">
+                <h2>Difference between Legacy and Projected Incentived Plan Salary</h2>
+                <canvas id="differenceChartCanvas"></canvas>
+            </div>
+
+            <!-- Projection Table -->
+            <div id="projectionTable" style="display: none;">
+                <h2>Projection Table</h2>
+                <table id="projectionTableContent"></table>
+            </div>
+            <br>
+            <button id="resetProjectionButton" type="button" style="display: none;" >Reset Assumptions</button>
+            <br>
+            <button id="backToResultsButton" type="button" style="display: none;">Go Back to This Year's Result</button>
         </div>
     </div>
 

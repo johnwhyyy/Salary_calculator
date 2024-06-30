@@ -3,8 +3,23 @@ import ChartHandler from './chartHandler.js';
 import FormHandler from './formHandler.js';
 import SalaryCalculatorLogic from './calculatorLogic.js';
 import EventHandler from './eventHandler.js';
+import ProjectionHandler from './projectionHandler.js';
 
 class SalaryCalculator {
+    //User Input Properties
+    rank
+    tenureStatus
+    userSalary
+    effortCoverage
+
+    //Calculated Properties
+    incentivizedBaseSalary
+    legacySalary
+    currentIncentivizedSalary
+
+    //Constant Properties
+    rankSalaries
+
     constructor() {
         this.rankSalaries = {
             "Assistant Professor": { percentile25: 103416, median: 123274, nextRankRaise: 9991 },
@@ -27,6 +42,7 @@ class SalaryCalculator {
         this.calculateTwice = this.calculateTwice.bind(this);
         this.calculateNextRank = this.calculateNextRank.bind(this);
         this.resetAndRecalculate = this.resetAndRecalculate.bind(this);
+        this.showProjection = this.showProjection.bind(this);
 
         document.addEventListener('DOMContentLoaded', () => {
             this.eventHandler.initEventListeners();
@@ -59,10 +75,14 @@ class SalaryCalculator {
 
     calculateAndPlotSalary() {
         const { rank, tenureStatus, userSalary, effortCoverage } = this.formHandler.getFormData();
+        this.rank = rank;
+        this.tenureStatus = tenureStatus;
+        this.userSalary = userSalary;
+        this.effortCoverage = effortCoverage;
         
-        let incentivizedBaseSalary = this.rankSalaries[rank].median;
-        if (userSalary > incentivizedBaseSalary) {
-            incentivizedBaseSalary = userSalary;
+        this.incentivizedBaseSalary = this.rankSalaries[rank].median;
+        if (userSalary > this.incentivizedBaseSalary) {
+            this.incentivizedBaseSalary = userSalary;
         }
 
         if (isNaN(userSalary) || isNaN(effortCoverage)) {
@@ -71,13 +91,16 @@ class SalaryCalculator {
         }
 
         const effortLevels = this.salaryCalculatorLogic.getEffortLevels(effortCoverage);
-        const incentivizedSalaries = this.salaryCalculatorLogic.getIncentivizedSalaries(tenureStatus, incentivizedBaseSalary, effortLevels);
-        const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? incentivizedBaseSalary : this.salaryCalculatorLogic.calculateSalary(incentivizedBaseSalary, effortCoverage);
+        const incentivizedSalaries = this.salaryCalculatorLogic.getIncentivizedSalaries(tenureStatus, this.incentivizedBaseSalary, effortLevels);
+        const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? this.incentivizedBaseSalary : this.salaryCalculatorLogic.calculateSalary(this.incentivizedBaseSalary, effortCoverage);
+        this.currentIncentivizedSalary = currentIncentivizedSalary;
         const legacySalary = Math.max(this.rankSalaries[rank].percentile25, userSalary);
+        this.legacySalary = legacySalary;
         const legacySalaries = effortLevels.map(effort => ({ x: effort, y: legacySalary }));
 
+
         this.chartHandler.plotChart('incentivizedChart', incentivizedSalaries, currentIncentivizedSalary, legacySalaries, effortCoverage);
-        this.showResults(rank, tenureStatus, legacySalary, incentivizedBaseSalary, currentIncentivizedSalary);
+        this.showResults(rank, tenureStatus, legacySalary, this.incentivizedBaseSalary, currentIncentivizedSalary);
     }
 
     displayHoverNote() {
@@ -101,6 +124,7 @@ class SalaryCalculator {
         const nextRankButton = document.getElementById('nextRankButton');
         nextRankButton.style.display = this.getNextRank(rank) ? 'block' : 'none';
         document.getElementById('resetButton').style.display = 'block';
+        document.getElementById('showProjectionButton').style.display = 'block';
         this.updateCurrentRankHeading();
         if (tenureStatus === 'Tenure-eligible') {
             document.getElementById('nextRankButton').style.display = 'none';
@@ -126,7 +150,7 @@ class SalaryCalculator {
         const nextRank = this.getNextRank(rank);
 
         if (nextRank) {
-            document.getElementById('rank').value = nextRank;
+            //document.getElementById('rank').value = nextRank;
             this.calculateAndPlotNextRankSalary(nextRank);
             this.calculateAndPlotNextRankSalary(nextRank);
             document.getElementById('nextRankButton').style.display = 'none';
@@ -198,6 +222,16 @@ class SalaryCalculator {
         document.getElementById('nextRankResults').style.display = 'none';
         document.getElementById('nextRankButton').style.display = 'none';
         document.getElementById('resetButton').style.display = 'none';
+        document.getElementById('projectionForm').style.display = 'none';
+        document.getElementById('projectionTable').style.display = 'none';
+        document.getElementById('projectionChart').style.display = 'none';
+    }
+
+    showProjection() {
+        const projectionHandler = new ProjectionHandler(this.rankSalaries, this.incentivizedBaseSalary, this.legacySalary, this.rank, this.effortCoverage);
+        document.getElementById('projectionPanel').style.display = 'block';
+        document.getElementById('results').style.display = 'none';
+        document.getElementById('hoverNote').style.display = 'none';  
     }
 }
 
