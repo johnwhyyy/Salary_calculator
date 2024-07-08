@@ -71,7 +71,7 @@ export default class ProjectionHandler {
 
         // Destroy existing charts and tables
         if (this.projectionChart.chart) {
-            this.projectionChart.chart.destroy();
+            document.getElementById('projectionChart').destroy();
             this.projectionChart.chart = null; // Reset the chart reference
         }
         if (this.projectionChart.differenceChart) {
