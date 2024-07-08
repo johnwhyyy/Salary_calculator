@@ -77,7 +77,7 @@ export default class ProjectionChart {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Yearly Salary Difference',
+                        label: 'Annual Salary Difference: Projected Incentived Plan - Legacy Plan',
                         data: data,
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',

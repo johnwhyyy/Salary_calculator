@@ -9,24 +9,26 @@ export default class ProjectionHandler {
     legacySalary;
     rank;
     effortCoverage;
+    tentureStatus;
 
     //Calculated Properties
 
     //Constant Properties
     rankSalaries;
 
-    constructor(rankSalaries, incentivizedBaseSalary,legacySalary, rank, effortCoverage) {
+    constructor(rankSalaries, incentivizedBaseSalary,legacySalary, rank, effortCoverage, tenureStatus) {
         //Save user inputs and caluculated fields from salaryCalculator
         this.rankSalaries = rankSalaries;
         this.incentivizedBaseSalary = incentivizedBaseSalary;
         this.legacySalary = legacySalary;
         this.rank = rank;
         this.effortCoverage = effortCoverage;
+        this.tenureStatus = tenureStatus;
 
         //Create instances of the included classes
         this.projectionForm = new ProjectionForm(effortCoverage);
         document.getElementById('projectionForm').style.display = 'block';
-        this.projectionCalculation = new ProjectionCalculation(rankSalaries);
+        this.projectionCalculation = new ProjectionCalculation(rankSalaries, tenureStatus);
         this.projectionTable = new ProjectionTable();
         this.projectionChart = new ProjectionChart();
 

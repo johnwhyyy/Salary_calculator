@@ -4,9 +4,11 @@ export default class ProjectionCalculation {
     incentivizedBaseSalary
     rank
     rankSalaries
+    tenureStatusYear0
 
-    constructor(baseSalaries) {
-        this.baseSalaries = baseSalaries;
+    constructor(rankSalaries, tenureStatusYear0) {
+        this.rankSalaries = rankSalaries;
+        this.tenureStatusYear0 = tenureStatusYear0;
     }
 
     calculateSalaries(formData, incentivizedBaseSalary, rank, rankSalaries) {
@@ -30,12 +32,17 @@ export default class ProjectionCalculation {
             
             if (data.promoted && currentRank !== 'Professor') {
                 currentRank = this.getNextRank(currentRank);
-                projectedBaseSalary = this.rankSalaries[currentRank].median 
+                if (projectedBaseSalary < this.rankSalaries[currentRank].median) {
+                    projectedBaseSalary = this.rankSalaries[currentRank].median; 
+                }
+                else {
+                    projectedBaseSalary = this.calculateYearlyIncrease(projectedBaseSalary, data.year);
+                }
                 salaryThisYear = this.calculateThisYearSalary(projectedBaseSalary, data.coverage);
             } 
             else {
                 projectedBaseSalary = this.calculateYearlyIncrease(projectedBaseSalary, data.year);
-                salaryThisYear = this.calculateThisYearSalary(projectedBaseSalary, data.coverage)
+                salaryThisYear = this.calculateThisYearSalary(projectedBaseSalary, data.coverage);
             }
 
             projectionData.push({
@@ -75,6 +82,12 @@ export default class ProjectionCalculation {
     }
 
     calculateThisYearSalary(annualSalary, effortCoverage) {
+        // Tenure-Eligible faculty receive 100% of their salary regardless of effort coverage
+        if (this.tenureStatusYear0 === "Tenure-eligible") {
+            this.tenureStatusYear0 = "Tenured";
+            return annualSalary;
+        }
+
         if (effortCoverage < 25) {
             return annualSalary * 0.75;
         } else if (effortCoverage <= 50) {
@@ -105,10 +118,14 @@ export default class ProjectionCalculation {
 
         for (let i = 0; i < formData.length; i++) {
             const data = formData[i];
-
             if (data.promoted && currentRank !== 'Professor') {
                 rank = this.getNextRank(rank);
-                salaryThisYear = rankSalaries[rank].percentile25;
+                if (salaryThisYear < rankSalaries[rank].percentile25) {
+                    salaryThisYear = rankSalaries[rank].percentile25;
+                }
+                else {
+                    salaryThisYear = this.calculateYearlyIncrease(salaryThisYear, data.year);
+                }
             }
             else {
                 salaryThisYear = this.calculateYearlyIncrease(salaryThisYear, data.year);

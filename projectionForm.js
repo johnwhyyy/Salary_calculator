@@ -24,7 +24,7 @@ export default class ProjectionForm {
             </div>
         `;
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             const year = this.currentYear + i;
             this.formElement.innerHTML += `
                 <div class="projection-row">
@@ -38,7 +38,7 @@ export default class ProjectionForm {
 
     getFormData() {
         const formData = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             formData.push({
                 year: this.currentYear + i,
                 coverage: parseFloat(document.getElementById(`coverage${i}`).value),

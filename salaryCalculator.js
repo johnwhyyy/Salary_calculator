@@ -21,6 +21,9 @@ class SalaryCalculator {
     rankSalaries
 
     constructor() {
+        // Display the message when the program starts
+        this.displayWelcomeMessage();
+
         this.rankSalaries = {
             "Assistant Professor": { percentile25: 103416, median: 123274, nextRankRaise: 9991 },
             "Associate Professor": { percentile25: 136800, median: 156000, nextRankRaise: 19982 },
@@ -35,6 +38,13 @@ class SalaryCalculator {
         this.eventHandler = new EventHandler(this.formHandler, this);
 
         this.init();
+    }
+
+
+    displayWelcomeMessage() {
+        const message = `PLEASE READ\n\nThe Salary Calculator and Projection Tool is designed to help faculty members at Georgetown University Medical Center (GUMC) understand and project their estimated salaries under both the incentivized and legacy tracks of the current Faculty Compensation Plan. The tool allows users to calculate an approximate representation of their current salary based on rank, tenure status, and effort coverage, and estimated merit increases. It also provides a projection of earnings over the next 10 years. This is for illustrative purposes only, aimed at helping faculty make informed decisions about their career and to assist with financial planning. This calculator is not intended to establish, or serve as a guarantee of, a particular salary (or merit increase) for any year covered by the Plan. The actual salary under each track for an individual faculty member may be different, based on a variety of factors, including individual performance evaluations and actual effort coverage.`;
+
+        window.alert(message);
     }
 
     init() {
@@ -228,7 +238,7 @@ class SalaryCalculator {
     }
 
     showProjection() {
-        const projectionHandler = new ProjectionHandler(this.rankSalaries, this.incentivizedBaseSalary, this.legacySalary, this.rank, this.effortCoverage);
+        const projectionHandler = new ProjectionHandler(this.rankSalaries, this.incentivizedBaseSalary, this.legacySalary, this.rank, this.effortCoverage, this.tenureStatus);
         document.getElementById('projectionPanel').style.display = 'block';
         document.getElementById('results').style.display = 'none';
         document.getElementById('hoverNote').style.display = 'none';  
