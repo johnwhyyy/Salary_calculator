@@ -120,12 +120,7 @@ export default class ProjectionCalculation {
             const data = formData[i];
             if (data.promoted && currentRank !== 'Professor') {
                 rank = this.getNextRank(rank);
-                if (salaryThisYear < rankSalaries[rank].percentile25) {
-                    salaryThisYear = rankSalaries[rank].percentile25;
-                }
-                else {
-                    salaryThisYear = this.calculateYearlyIncrease(salaryThisYear, data.year);
-                }
+                salaryThisYear = rankSalaries[rank].percentile25; //new change, use new rank 25 percentile when promoted
             }
             else {
                 salaryThisYear = this.calculateYearlyIncrease(salaryThisYear, data.year);
