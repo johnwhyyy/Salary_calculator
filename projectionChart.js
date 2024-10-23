@@ -1,10 +1,4 @@
 export default class ProjectionChart {
-    //Objects
-    chart;
-    differenceChart;
-    chartElement;
-    differenceChartElement;
-
     constructor() {
         this.chartElement = document.getElementById('projectionChartCanvas');
         this.differenceChartElement = document.getElementById('differenceChartCanvas');
@@ -13,10 +7,8 @@ export default class ProjectionChart {
     }
 
     displayChart(projectionData, legacyProjectionData) {
-        this.clearCanvas(this.chartElement);
         if (this.chart) {
             this.chart.destroy();
-            this.chart = null; 
         }
 
         const ctx = this.chartElement.getContext('2d');
@@ -71,11 +63,10 @@ export default class ProjectionChart {
     }
 
     displayDifference(salaryDifference) {
-        this.clearCanvas(this.differenceChartElement);
         if (this.differenceChart) {
             this.differenceChart.destroy();
-            this.differenceChart = null; 
         }
+
         const ctx = this.differenceChartElement.getContext('2d');
         const labels = salaryDifference.map(data => data.year);
         const data = salaryDifference.map(data => data.difference);
@@ -113,35 +104,5 @@ export default class ProjectionChart {
         });
 
         document.getElementById('differenceChart').style.display = 'block';
-    }
-    destroy() {
-        if (this.chart) {
-            console.log('destroying projection chart'); // Debug line to confirm chart is being destroyed
-            this.chart.destroy();
-            this.chart = null;
-            this.clearCanvas(this.chartElement);
-        }
-        
-        if (this.differenceChart) {
-            console.log('destroying difference chart');// Debug line to confirm chart is being destroyed
-            this.differenceChart.destroy();
-            this.differenceChart = null;
-            this.clearCanvas(this.differenceChartElement);
-        }
-    }
-
-    // Function to log all Chart instances
-    logChartInstances() {
-        console.log('Logging all Chart instances:');
-        for (let chartId in Chart.instances) {
-            if (Chart.instances.hasOwnProperty(chartId)) {
-                console.log(`Chart ID: ${chartId}`, Chart.instances[chartId]);
-            }
-        }
-    }
-    // Function to clear the canvas
-    clearCanvas(canvas) {
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 }

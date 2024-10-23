@@ -20,9 +20,6 @@ class SalaryCalculator {
     //Constant Properties
     rankSalaries
 
-    //Object
-    projectionHandler
-
     constructor() {
         // Display the message when the program starts
         this.displayWelcomeMessage();
@@ -241,7 +238,7 @@ class SalaryCalculator {
     }
 
     showProjection() {
-        this.projectionHandler = new ProjectionHandler(this.rankSalaries, this.incentivizedBaseSalary, this.legacySalary, this.rank, this.effortCoverage, this.tenureStatus);
+        const projectionHandler = new ProjectionHandler(this.rankSalaries, this.incentivizedBaseSalary, this.legacySalary, this.rank, this.effortCoverage, this.tenureStatus);
         document.getElementById('projectionPanel').style.display = 'block';
         document.getElementById('results').style.display = 'none';
         document.getElementById('hoverNote').style.display = 'none';  

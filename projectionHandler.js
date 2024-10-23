@@ -45,7 +45,6 @@ export default class ProjectionHandler {
     }
 
     calculateProjection() {
-        this.projectionChart.logChartInstances();
         const formData = this.projectionForm.getFormData();
         const projectionData = this.projectionCalculation.calculateSalaries(formData, this.incentivizedBaseSalary, this.rank, this.rankSalaries);
         console.log('projectionData:', projectionData); // Debug line to examine projectionData
@@ -64,23 +63,29 @@ export default class ProjectionHandler {
 
     reset() {
         this.projectionForm.initForm();
-        this.projectionChart.destroy();
-        if (this.projectionTable.table) {
-            this.projectionTable.table.destroy();
-        }
-        
         document.getElementById('projectionForm').style.display = 'block';
         document.getElementById('projectionTable').style.display = 'none';
         document.getElementById('projectionChart').style.display = 'none';
         document.getElementById('differenceChart').style.display = 'none';
         document.getElementById('resetProjectionButton').style.display = 'none';
 
+        // Destroy existing charts and tables
+        if (this.projectionChart.chart) {
+            document.getElementById('projectionChart').destroy();
+            this.projectionChart.chart = null; // Reset the chart reference
+        }
+        if (this.projectionChart.differenceChart) {
+            this.projectionChart.differenceChart.destroy();
+            this.projectionChart.differenceChart = null; // Reset the chart reference
+        }
+        if (this.projectionTable.table) {
+            this.projectionTable.table.destroy();
+        }
     }
 
     backToResults() {
         this.reset();
         document.getElementById('results').style.display = 'block';
-        document.getElementById('resetButton').style.display = 'none';
         document.getElementById('projectionPanel').style.display = 'none';
     }
 }
