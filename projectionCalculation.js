@@ -124,7 +124,7 @@ export default class ProjectionCalculation {
                     salaryThisYear = rankSalaries[rank].percentile25;
                 }
                 else {
-                    salaryThisYear = this.calculateYearlyIncrease(salaryThisYear, data.year);
+                    salaryThisYear =  salaryThisYear + this.rankSalaries[rank].nextRankRaise;
                 }
             }
             else {

@@ -107,7 +107,7 @@ class SalaryCalculator {
         const incentivizedSalaries = this.salaryCalculatorLogic.getIncentivizedSalaries(tenureStatus, this.incentivizedBaseSalary, effortLevels);
         const currentIncentivizedSalary = tenureStatus === 'Tenure-eligible' ? this.incentivizedBaseSalary : this.salaryCalculatorLogic.calculateSalary(this.incentivizedBaseSalary, effortCoverage);
         this.currentIncentivizedSalary = currentIncentivizedSalary;
-        const legacySalary = Math.max(this.rankSalaries[rank].percentile25, userSalary);
+        const legacySalary = userSalary;
         this.legacySalary = legacySalary;
         const legacySalaries = effortLevels.map(effort => ({ x: effort, y: legacySalary }));
 
